@@ -105,7 +105,7 @@ export default function Home() {
                 ✕
               </button>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 text-black">
               <p><strong>Email:</strong> {selectedUser.email}</p>
               <p><strong>Address:</strong></p>
               <p className="pl-4">
