@@ -1,7 +1,7 @@
 'use client';
 // this is a client component
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 // image component from next/image
 
@@ -19,10 +19,22 @@ interface User {
     large: string;
   };
   gender: string;
+  email: string;
+  location: {
+    street: {
+      number: number;
+      name: string;
+    };
+    city: string;
+    state: string;
+    country: string;
+    postcode: string;
+  };
 }
 
 export default function Home() {
   const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   // useState is a hook. add state to your functional component
   // returns an array with two elements: the current state value and a function that allows you to update that value
   // store an array of User objects (defined above as an interface)
@@ -59,9 +71,11 @@ export default function Home() {
       <h1 className="text-2xl font-bold mb-4">Random Users</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {users.map((user, index) => (
-          // map is used to iterate over an array and return a new array
-          // iterate over the users array and return a new array of JSX elements
-          <div key={index} className="border p-4 rounded-lg">
+          <div 
+            key={index} 
+            className="border p-4 rounded-lg cursor-pointer hover:bg-gray-50"
+            onClick={() => setSelectedUser(user)}
+          >
             <Image
               src={user.picture.large}
               // src is the source of the image
@@ -77,7 +91,32 @@ export default function Home() {
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      {selectedUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full m-4">
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-xl font-bold">{`${selectedUser.name.first} ${selectedUser.name.last}`}</h2>
+              <button 
+                onClick={() => setSelectedUser(null)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-2">
+              <p><strong>Email:</strong> {selectedUser.email}</p>
+              <p><strong>Address:</strong></p>
+              <p className="pl-4">
+                {selectedUser.location.street.number} {selectedUser.location.street.name}<br />
+                {selectedUser.location.city}, {selectedUser.location.state}<br />
+                {selectedUser.location.country} {selectedUser.location.postcode}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-
 }
